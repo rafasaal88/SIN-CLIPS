@@ -143,7 +143,46 @@
 )
 
 
+(defrule MAIN::tiene_en_mente_elegir_3
+	(opcion_inicial_rama 3)
+	(datos (nombre ?nombre))
+	
+	?d1<-(activar_computadores 0)
+	(activar_computacion 0)
+	(activar_software 0)
 
+	=>
+	(retract ?d1)
+	(printout t "Bueno " ?nombre ", primero te vas a realizar preguntas de asignaturas relacionadas con dicha rama, comencemos." crlf)
+	(assert (activar_computadores 1))
+	(focus COMPUTADORES)
+	
+)
+
+(defrule MAIN::tiene_en_mente_elegir_3_1
+	(activar_computadores 1)
+	?d1<-(activar_software 0)
+	(activar_computacion 0)
+
+=>
+	(retract ?d1)
+	(assert (activar_software 1))
+	(printout t "Ahora vamos con las preguntas de software" crlf)
+	(focus SOFTWARE)
+)
+
+(defrule MAIN::tiene_en_mente_elegir_3_1_1
+	(activar_software 1)
+	(activar_computadores 1)
+	(datos (nombre ?nombre))
+	?d1<-(activar_computacion 0)
+	
+=>
+	(retract ?d1)
+	(assert(activar_computacion 1))
+	(printout t "A continuacion, vamos con las de computacion. Ya queda poco " ?nombre crlf)
+	(focus COMPUTACION)
+)
 
 
 (defmodule SOFTWARE)
