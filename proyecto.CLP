@@ -8,7 +8,22 @@
 
 	(slot nombre(type STRING))
 	(slot nota(type FLOAT))
+	(slot rama(type STRING))
 )
+
+(deftemplate MAIN::media
+	(slot rama (type STRING))
+	(slot acumulador (type FLOAT))
+	(slot elementos (type FLOAT))
+	(slot media (type FLOAT))
+)
+
+(deffacts medias
+	(media (rama "Software")(acumulador 0.0)(elementos 0.0)(media 0.0))
+	(media (rama "Computacion")(acumulador 0.0)(elementos 0.0)(media 0.0))
+	(media (rama "Computadores")(acumulador 0.0)(elementos 0.0)(media 0.0))
+)
+
 
 
 (deffacts hechos
@@ -139,7 +154,6 @@
 )
 
 
-;esta regla está duplicada, la eliminaré en un futuro
 (defrule MAIN::tiene_en_mente_elegir_2_1_1
 	(opcion_inicial_rama 2)
 	(activar_software 1)
@@ -208,15 +222,204 @@
 		(printout t "Ya vamos a terminar " ?nombre ", vamos con las ultimas:" crlf)
 
 		(printout t "Economia: " crlf)		
-		(assert (asignatura (nombre "Economia")(nota (read))))
+		(assert (asignatura(rama "sin asignar") (nombre "Economia")(nota (read))))
 
 		(printout t "Matematica discreta: " crlf)		
-		(assert (asignatura (nombre "md")(nota (read))))
+		(assert (asignatura (rama "sin asignar")(nombre "md")(nota (read))))
 
 		(printout t "Algebra lineal: " crlf)		
-		(assert (asignatura (nombre "al")(nota (read))))
+		(assert (asignatura (rama "sin asignar") (nombre "al")(nota (read))))
+
+	(assert (preguntas_extra 0))
 
 )
+
+(defrule extra
+	(preguntas_extra 0)
+	(datos (nombre ?nombre))
+=>
+	(printout t "Una ultima pregunta " ?nombre ". ¿Has cursado alguna asignatura más que no sea alguna de la que te he preguntado)" crlf)
+	(printout t "(Si/No)" crlf)
+	(assert (preguntas_extra (read)))
+
+)
+
+(defrule extra_2_1
+	(or(or(preguntas_extra No)(preguntas_extra NO))(preguntas_extra no))
+	(datos (nombre ?nombre))
+=>
+	(printout t "De acuerdo " ?nombre ". Hemos acabado con las preguntas. Vamos a calcular los resultados y te vamos a ofrecer un resultado" crlf)
+	(assert (calcular 0))
+	
+
+)
+
+
+(defrule extra_2
+	(or(or(preguntas_extra Si)(preguntas_extra SI))(preguntas_extra si))
+	?d1<-(preguntas_extra 0)
+=>
+	(retract ?d1)
+	(assert (preguntas_extra 1))
+	
+
+)
+
+(defrule extra_3
+	(preguntas_extra 1)
+	(datos (nombre ?nombre))
+
+=>
+		(printout t "De acuerdo " ?nombre ". Vamos a preguntarte las asignaturas, RESPONDE CON 0 las que no hayas cursado" crlf)
+
+		(printout t "Programacion y Administracion de Sistemas: " crlf)		
+		(assert (asignatura(rama "software")(nombre "pas")(nota (read))))
+
+		(printout t "Sistemas de informacion: " crlf)		
+		(assert (asignatura(rama "software")(nombre "sif")(nota (read))))
+
+		(printout t "Estructura de datos: " crlf)		
+		(assert (asignatura(rama "computacion") (nombre "ed")(nota (read))))
+
+		(printout t "Sistemas inteligentes: " crlf)		
+		(assert (asignatura(rama "computacion") (nombre "sin")(nota (read))))
+
+		(printout t "Arquitectura de redes: " crlf)		
+		(assert (asignatura(rama "computadores") (nombre "ar")(nota (read))))
+
+		(printout t "Redes: " crlf)		
+		(assert (asignatura(rama "computadores") (nombre "redes")(nota (read))))
+
+		(printout t "Configuracion y Evaluacion de Sistemas Informaticos: " crlf)		
+		(assert (asignatura(rama "computadores") (nombre "cesi")(nota (read))))
+
+		(printout t "Programacion Web: " crlf)		
+		(assert (asignatura(rama "software") (nombre "pw")(nota (read))))
+
+		(printout t "Legislacion: " crlf)		
+		(assert (asignatura(rama "software") (nombre "legislacion")(nota (read))))		
+
+		(printout t "Proyectos: " crlf)		
+		(assert (asignatura(rama "software") (nombre "proyectos")(nota (read))))
+
+	(printout t "De acuerdo " ?nombre ". Hemos acabado con las preguntas. Vamos a calcular los resultados y te vamos a ofrecer un resultado" crlf)
+
+	(assert (calcular 0))
+)
+
+(defrule borrar
+	(calcular 0)
+	?d1 <- (asignatura (nombre ?x)(nota ?z&:(= ?z 0))(rama ?y))
+	=>
+
+	(retract ?d1)
+
+)
+
+(defrule borrar_2
+	?d1<-(calcular 0)
+	(not(exists(asignatura (nombre ?x)(nota ?z&:(= ?z 0))(rama ?y))))
+	=>
+	(retract ?d1)
+	(assert(calcular 1))
+
+)
+
+
+
+(defrule sumar_software
+	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "software"))
+	?d2<-(media (rama "Software")(acumulador ?z)(elementos ?e)(media ?m))
+=>
+	(retract ?d1 ?d2)
+	(assert (media (rama "Software")(acumulador (+ ?z ?y) )(elementos (+ ?e 1) )(media ?m)))
+
+)
+
+(defrule sumar_computacion
+	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "computacion"))
+	?d2<-(media (rama "Computacion")(acumulador ?z)(elementos ?e)(media ?m))
+=>
+	(retract ?d1 ?d2)
+	(assert (media (rama "Computacion")(acumulador (+ ?z ?y) )(elementos (+ ?e 1) )(media ?m)))
+
+)
+
+(defrule sumar_computadores
+	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "computadores"))
+	?d2<-(media (rama "Computadores")(acumulador ?z)(elementos ?e)(media ?m))
+=>
+	(retract ?d1 ?d2)
+	(assert (media (rama "Computadores")(acumulador (+ ?z ?y) )(elementos (+ ?e 1) )(media ?m)))
+
+)
+
+(defrule media_software
+
+	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "software"))))
+
+	
+	?d1<-(media (rama "Software")(acumulador ?x)(elementos ?e)(media ?m))
+
+	(not(test(= ?e 0)))
+	(test(= ?m 0))
+
+=>
+	(retract ?d1)
+
+	(bind ?media (/ ?x ?e))
+	(assert(media (rama "Software")(acumulador ?x)(elementos ?e)(media ?media)))
+)
+
+(defrule media_computacion
+
+	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "computacion"))))
+
+	
+	?d1<-(media (rama "Computacion")(acumulador ?x)(elementos ?e)(media ?m))
+
+	(not(test(= ?e 0)))
+	(test(= ?m 0))
+
+=>
+	(retract ?d1)
+
+	(bind ?media (/ ?x ?e))
+	(assert(media (rama "Computacion")(acumulador ?x)(elementos ?e)(media ?media)))
+)
+
+(defrule media_computadores
+
+	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "computadores"))))
+
+	
+	?d1<-(media (rama "Computadores")(acumulador ?x)(elementos ?e)(media ?m))
+
+	(not(test(= ?e 0)))
+	(test(= ?m 0))
+
+=>
+	(retract ?d1)
+
+	(bind ?media (/ ?x ?e))
+	(assert(media (rama "Computadores")(acumulador ?x)(elementos ?e)(media ?media)))
+)
+
+(defrule mostrar
+	(media (rama ?x)(media ?m1))
+	(media (rama ?y)(media ?m2))
+	(media (rama ?z)(media ?m3))
+	(test (> ?m1 ?m2))
+	(test (> ?m2 ?m3))
+=>
+	(printout t "Tras realizar calculos de las medias de las asignaturas que nos has aportado el ranking 
+	por ramas que deberias escoger es el siguiente: " crlf)
+	(printout t "1."?x crlf)
+	(printout t "2."?y crlf)
+	(printout t "3."?z crlf)
+)
+
+
 
 
 
@@ -237,19 +440,15 @@
 		(printout t "A continuacion, introduzca las notas de las siguientes asignaturas:" crlf)
 		
 		(printout t "Base de datos: " crlf)		
-		(assert (asignatura (nombre "bdd")(nota (read))))
+		(assert (asignatura(rama "software") (nombre "bdd")(nota (read))))
 
 		(printout t "Sistemas operativos: " crlf)		
-		(assert (asignatura (nombre "so")(nota (read))))
+		(assert (asignatura(rama "software")(nombre "so")(nota (read))))
 
 		(printout t "Ingenieria del Software: " crlf)		
-		(assert (asignatura (nombre "is")(nota (read))))
+		(assert (asignatura(rama "software")(nombre "is")(nota (read))))
 
-		;(printout t "Programacion y Administracion de Sistemas: " crlf)		
-		;(assert (asignatura (nombre "pas")(nota (read))))
 
-		;(printout t "Sistemas de informacion: " crlf)		
-		;(assert (asignatura (nombre "sif")(nota (read))))
 
 	)
 
@@ -267,25 +466,20 @@
 		(printout t "Introduzca las notas de las siguientes asignaturas:" crlf)
 		
 		(printout t "Introduccion a la programacion: " crlf)		
-		(assert (asignatura (nombre "ip")(nota (read))))
+		(assert (asignatura(rama "computacion") (nombre "ip")(nota (read))))
 
 		(printout t "Calculo: " crlf)		
-		(assert (asignatura (nombre "calculo")(nota (read))))
+		(assert (asignatura(rama "computacion") (nombre "calculo")(nota (read))))
 
 		(printout t "Estadistica: " crlf)		
-		(assert (asignatura (nombre "estadistica")(nota (read))))
+		(assert (asignatura(rama "computacion") (nombre "estadistica")(nota (read))))
 
 		(printout t "Metodologia de la programacion: " crlf)		
-		(assert (asignatura (nombre "mp")(nota (read))))
+		(assert (asignatura(rama "computacion") (nombre "mp")(nota (read))))
 
 		(printout t "Programacion Orienta a Objetos: " crlf)		
-		(assert (asignatura (nombre "poo")(nota (read))))
+		(assert (asignatura(rama "computacion") (nombre "poo")(nota (read))))
 
-		;(printout t "Estructura de datos: " crlf)		
-		;(assert (asignatura (nombre "ed")(nota (read))))
-
-		;(printout t "Sistemas inteligentes: " crlf)		
-		;(assert (asignatura (nombre "sin")(nota (read))))
 	)
 
 
@@ -299,19 +493,18 @@
 		(printout t "A continuacion, introduzca las notas de las siguientes asignaturas:" crlf)
 		
 		(printout t "Fisica: " crlf)		
-		(assert (asignatura (nombre "fisica")(nota (read))))
+		(assert (asignatura(rama "computadores") (nombre "fisica")(nota (read))))
 
 		(printout t "Fundamentos y estructuras de computadores: " crlf)		
-		(assert (asignatura (nombre "fec")(nota (read))))
+		(assert (asignatura(rama "computadores") (nombre "fec")(nota (read))))
 
 		(printout t "Circuitos y sistemas electronicos: " crlf)		
-		(assert (asignatura (nombre "cse")(nota (read))))
+		(assert (asignatura(rama "computadores") (nombre "cse")(nota (read))))
 
 		(printout t "Arquitectura de computadores: " crlf)		
-		(assert (asignatura (nombre "ac")(nota (read))))
+		(assert (asignatura(rama "computadores") (nombre "ac")(nota (read))))
 
-		;(printout t "Arquitectura de redes: " crlf)		
-		;(assert (asignatura (nombre "ar")(nota (read))))
+
 	)
 
 
