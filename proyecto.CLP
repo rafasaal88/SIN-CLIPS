@@ -1,8 +1,15 @@
-(defmodule MAIN)
+(defmodule MAIN(export ?ALL))
 
 (deftemplate MAIN::datos
 	(slot nombre(type SYMBOL))
 )
+
+(deftemplate MAIN::asignatura
+
+	(slot nombre(type STRING))
+	(slot nota(type FLOAT))
+)
+
 
 (deffacts hechos
 
@@ -78,6 +85,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_1_1
+	(opcion_inicial_rama 1)
 	(activar_software 1)
 	?d1<-(activar_computacion 0)
 	(activar_computadores 0)
@@ -90,6 +98,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_1_1_1
+	(opcion_inicial_rama 1)
 	(activar_software 1)
 	(activar_computacion 1)
 	(datos (nombre ?nombre))
@@ -118,8 +127,10 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_2_1
+	(opcion_inicial_rama 2)
 	(activar_computacion 1)
 	?d1<-(activar_software 0)
+	(activar_computadores 0)
 =>
 	(retract ?d1)
 	(assert (activar_software 1))
@@ -130,6 +141,7 @@
 
 ;esta regla está duplicada, la eliminaré en un futuro
 (defrule MAIN::tiene_en_mente_elegir_2_1_1
+	(opcion_inicial_rama 2)
 	(activar_software 1)
 	(activar_computacion 1)
 	(datos (nombre ?nombre))
@@ -160,6 +172,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_3_1
+	(opcion_inicial_rama 3)
 	(activar_computadores 1)
 	?d1<-(activar_software 0)
 	(activar_computacion 0)
@@ -172,6 +185,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_3_1_1
+	(opcion_inicial_rama 3)
 	(activar_software 1)
 	(activar_computadores 1)
 	(datos (nombre ?nombre))
@@ -184,36 +198,120 @@
 	(focus COMPUTACION)
 )
 
+(defrule asignaturas_sin_rama
+	(activar_software 1)
+	(activar_computadores 1)
+	(activar_computacion 1)
+	(datos (nombre ?nombre))
 
-(defmodule SOFTWARE)
+=>
+		(printout t "Ya vamos a terminar " ?nombre ", vamos con las ultimas:" crlf)
+
+		(printout t "Economia: " crlf)		
+		(assert (asignatura (nombre "Economia")(nota (read))))
+
+		(printout t "Matematica discreta: " crlf)		
+		(assert (asignatura (nombre "md")(nota (read))))
+
+		(printout t "Algebra lineal: " crlf)		
+		(assert (asignatura (nombre "al")(nota (read))))
+
+)
 
 
-	(defrule SOFTWARE::prueba
+
+
+
+
+
+
+
+
+(defmodule SOFTWARE (import MAIN deftemplate asignatura initial-fact))
+
+
+	(defrule SOFTWARE::recoger_notas_software
+
 
 	=>
-		(printout t "SOY SOFTWARE" crlf)
+		(printout t "A continuacion, introduzca las notas de las siguientes asignaturas:" crlf)
+		
+		(printout t "Base de datos: " crlf)		
+		(assert (asignatura (nombre "bdd")(nota (read))))
+
+		(printout t "Sistemas operativos: " crlf)		
+		(assert (asignatura (nombre "so")(nota (read))))
+
+		(printout t "Ingenieria del Software: " crlf)		
+		(assert (asignatura (nombre "is")(nota (read))))
+
+		;(printout t "Programacion y Administracion de Sistemas: " crlf)		
+		;(assert (asignatura (nombre "pas")(nota (read))))
+
+		;(printout t "Sistemas de informacion: " crlf)		
+		;(assert (asignatura (nombre "sif")(nota (read))))
+
 	)
 
 
 
-(defmodule COMPUTACION)
 
 
-	(defrule COMPUTACION::prueba2
+
+(defmodule COMPUTACION(import MAIN deftemplate asignatura initial-fact))
+
+
+	(defrule COMPUTACION::recoger_notas_computacion
 
 	=>
-		(printout t "SOY COMPUTACION" crlf)
+		(printout t "Introduzca las notas de las siguientes asignaturas:" crlf)
+		
+		(printout t "Introduccion a la programacion: " crlf)		
+		(assert (asignatura (nombre "ip")(nota (read))))
+
+		(printout t "Calculo: " crlf)		
+		(assert (asignatura (nombre "calculo")(nota (read))))
+
+		(printout t "Estadistica: " crlf)		
+		(assert (asignatura (nombre "estadistica")(nota (read))))
+
+		(printout t "Metodologia de la programacion: " crlf)		
+		(assert (asignatura (nombre "mp")(nota (read))))
+
+		(printout t "Programacion Orienta a Objetos: " crlf)		
+		(assert (asignatura (nombre "poo")(nota (read))))
+
+		;(printout t "Estructura de datos: " crlf)		
+		;(assert (asignatura (nombre "ed")(nota (read))))
+
+		;(printout t "Sistemas inteligentes: " crlf)		
+		;(assert (asignatura (nombre "sin")(nota (read))))
 	)
 
 
 
-(defmodule COMPUTADORES)
+(defmodule COMPUTADORES(import MAIN deftemplate asignatura initial-fact))
 
 
-	(defrule COMPUTADORES::prueba3
+	(defrule COMPUTADORES::recoger_notas_computadores
 
 	=>
-		(printout t "SOY COMPUTADORES" crlf)
+		(printout t "A continuacion, introduzca las notas de las siguientes asignaturas:" crlf)
+		
+		(printout t "Fisica: " crlf)		
+		(assert (asignatura (nombre "fisica")(nota (read))))
+
+		(printout t "Fundamentos y estructuras de computadores: " crlf)		
+		(assert (asignatura (nombre "fec")(nota (read))))
+
+		(printout t "Circuitos y sistemas electronicos: " crlf)		
+		(assert (asignatura (nombre "cse")(nota (read))))
+
+		(printout t "Arquitectura de computadores: " crlf)		
+		(assert (asignatura (nombre "ac")(nota (read))))
+
+		;(printout t "Arquitectura de redes: " crlf)		
+		;(assert (asignatura (nombre "ar")(nota (read))))
 	)
 
 
