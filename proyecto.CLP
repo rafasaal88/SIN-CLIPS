@@ -67,6 +67,33 @@
 
 )
 
+
+(defrule MAIN::tiene_en_mente_2
+
+	(datos (nombre ?nombre))
+	(opcion_inicial 2)
+
+	?d1<-(activar_software 0)
+	?d2<-(activar_computadores 0)
+	?d3<-(activar_computacion 0)
+
+=>
+	(retract ?d1 ?d2 ?d3)	
+
+	(printout t "De acuerdo " ?nombre ", no te preocupes. Me programaron para ayudarte." crlf)
+ 
+	(focus NINGUNA)
+	
+	(assert(activar_software 1))
+	(assert(activar_computacion 1))
+	(assert(activar_computadores 1))
+
+
+)
+
+
+
+
 (defrule MAIN::tiene_en_mente
 
 	(datos (nombre ?nombre))
@@ -83,7 +110,9 @@
 
 )
 
+
 (defrule MAIN::tiene_en_mente_elegir_1
+	(opcion_inicial 1)
 	(opcion_inicial_rama 1)
 	(datos (nombre ?nombre))
 	
@@ -100,6 +129,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_1_1
+	(opcion_inicial 1)
 	(opcion_inicial_rama 1)
 	(activar_software 1)
 	?d1<-(activar_computacion 0)
@@ -113,6 +143,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_1_1_1
+	(opcion_inicial 1)
 	(opcion_inicial_rama 1)
 	(activar_software 1)
 	(activar_computacion 1)
@@ -128,6 +159,7 @@
 
 
 (defrule MAIN::tiene_en_mente_elegir_2
+	(opcion_inicial 1)
 	(opcion_inicial_rama 2)
 	(datos (nombre ?nombre))
 	?d1<-(activar_computacion 0)
@@ -142,6 +174,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_2_1
+	(opcion_inicial 1)
 	(opcion_inicial_rama 2)
 	(activar_computacion 1)
 	?d1<-(activar_software 0)
@@ -155,6 +188,7 @@
 
 
 (defrule MAIN::tiene_en_mente_elegir_2_1_1
+	(opcion_inicial 1)
 	(opcion_inicial_rama 2)
 	(activar_software 1)
 	(activar_computacion 1)
@@ -170,6 +204,7 @@
 
 
 (defrule MAIN::tiene_en_mente_elegir_3
+	(opcion_inicial 1)
 	(opcion_inicial_rama 3)
 	(datos (nombre ?nombre))
 	
@@ -186,6 +221,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_3_1
+	(opcion_inicial 1)
 	(opcion_inicial_rama 3)
 	(activar_computadores 1)
 	?d1<-(activar_software 0)
@@ -199,6 +235,7 @@
 )
 
 (defrule MAIN::tiene_en_mente_elegir_3_1_1
+	(opcion_inicial 1)
 	(opcion_inicial_rama 3)
 	(activar_software 1)
 	(activar_computadores 1)
@@ -249,7 +286,7 @@
 	(datos (nombre ?nombre))
 =>
 	(printout t "De acuerdo " ?nombre ". Hemos acabado con las preguntas. Vamos a calcular los resultados y te vamos a ofrecer un resultado" crlf)
-	(assert (calcular 0))
+	(assert (calcular 1))
 	
 
 )
@@ -270,7 +307,7 @@
 	(datos (nombre ?nombre))
 
 =>
-		(printout t "De acuerdo " ?nombre ". Vamos a preguntarte las asignaturas, RESPONDE CON 0 las que no hayas cursado" crlf)
+		(printout t "De acuerdo " ?nombre ". Vamos a preguntarte las asignaturas, RESPONDE CON 0 LAS QUE NO HAYAS CURSADO" crlf)
 
 		(printout t "Programacion y Administracion de Sistemas: " crlf)		
 		(assert (asignatura(rama "software")(nombre "pas")(nota (read))))
@@ -302,7 +339,8 @@
 		(printout t "Proyectos: " crlf)		
 		(assert (asignatura(rama "software") (nombre "proyectos")(nota (read))))
 
-	(printout t "De acuerdo " ?nombre ". Hemos acabado con las preguntas. Vamos a calcular los resultados y te vamos a ofrecer un resultado" crlf)
+	(printout t "De acuerdo " ?nombre ". Hemos acabado con las preguntas. Vamos a calcular los resultados y te vamos a ofrecer un resultado.
+	Tras realizar calculos de las medias de las asignaturas que nos has aportado el ranking	por ramas que deberias escoger es el siguiente:" crlf)
 
 	(assert (calcular 0))
 )
@@ -328,6 +366,7 @@
 
 
 (defrule sumar_software
+	(calcular 1)
 	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "software"))
 	?d2<-(media (rama "Software")(acumulador ?z)(elementos ?e)(media ?m))
 =>
@@ -337,6 +376,7 @@
 )
 
 (defrule sumar_computacion
+	(calcular 1)
 	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "computacion"))
 	?d2<-(media (rama "Computacion")(acumulador ?z)(elementos ?e)(media ?m))
 =>
@@ -346,6 +386,7 @@
 )
 
 (defrule sumar_computadores
+	(calcular 1)
 	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "computadores"))
 	?d2<-(media (rama "Computadores")(acumulador ?z)(elementos ?e)(media ?m))
 =>
@@ -355,7 +396,7 @@
 )
 
 (defrule media_software
-
+	(calcular 1)
 	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "software"))))
 
 	
@@ -372,7 +413,7 @@
 )
 
 (defrule media_computacion
-
+	(calcular 1)
 	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "computacion"))))
 
 	
@@ -389,7 +430,7 @@
 )
 
 (defrule media_computadores
-
+	(calcular 1)
 	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "computadores"))))
 
 	
@@ -406,17 +447,18 @@
 )
 
 (defrule mostrar
-	(media (rama ?x)(media ?m1))
-	(media (rama ?y)(media ?m2))
-	(media (rama ?z)(media ?m3))
-	(test (> ?m1 ?m2))
-	(test (> ?m2 ?m3))
+	(calcular 1)
+	?d1<-(media (rama ?x)(acumulador ?y)(elementos ?z)(media ?media))
+	(not
+		(exists
+			(media (media ?m&:(> ?media ?m)))
+		)
+	)
+
 =>
-	(printout t "Tras realizar calculos de las medias de las asignaturas que nos has aportado el ranking 
-	por ramas que deberias escoger es el siguiente: " crlf)
-	(printout t "1."?x crlf)
-	(printout t "2."?y crlf)
-	(printout t "3."?z crlf)
+	(retract ?d1)
+	(printout t ?x crlf)
+
 )
 
 
@@ -509,7 +551,54 @@
 
 
 
+(defmodule NINGUNA(import MAIN deftemplate asignatura initial-fact))
 
+
+	(defrule NINGUNA::todas_asignaturas
+
+	=>
+		(printout t "Vamos a empezar por las de primero" crlf)
+
+		(printout t "Introduccion a la programacion: " crlf)	
+		(assert (asignatura(rama "computacion") (nombre "ip")(nota (read))))
+
+		(printout t "Calculo: " crlf)		
+		(assert (asignatura(rama "computacion") (nombre "calculo")(nota (read))))
+
+		(printout t "Estadistica: " crlf)		
+		(assert (asignatura(rama "computacion") (nombre "estadistica")(nota (read))))
+
+		(printout t "Fisica: " crlf)		
+		(assert (asignatura(rama "computadores") (nombre "fisica")(nota (read))))
+
+		(printout t "Fundamentos y estructuras de computadores: " crlf)		
+		(assert (asignatura(rama "computadores") (nombre "fec")(nota (read))))
+
+		(printout t "Circuitos y sistemas electronicos: " crlf)		
+		(assert (asignatura(rama "computadores") (nombre "cse")(nota (read))))
+
+		(printout t "Metodologia de la programacion: " crlf)		
+		(assert (asignatura(rama "computacion") (nombre "mp")(nota (read))))		
+
+		(printout t crlf "Vamos ahora con las de segundo:" crlf crlf)
+
+		(printout t "Base de datos: " crlf)		
+		(assert (asignatura(rama "software") (nombre "bdd")(nota (read))))
+
+		(printout t "Sistemas operativos: " crlf)		
+		(assert (asignatura(rama "software")(nombre "so")(nota (read))))
+
+		(printout t "Ingenieria del Software: " crlf)		
+		(assert (asignatura(rama "software")(nombre "is")(nota (read))))
+
+		(printout t "Programacion Orienta a Objetos: " crlf)		
+		(assert (asignatura(rama "computacion") (nombre "poo")(nota (read))))
+
+		(printout t "Arquitectura de computadores: " crlf)		
+		(assert (asignatura(rama "computadores") (nombre "ac")(nota (read))))
+
+
+	)
 
 
 
