@@ -63,7 +63,21 @@
 	(printout t crlf "De acuerdo " ?nombre ". ¿Tienes en mente elegir alguna rama en concreto o no sabes cual elegir?" crlf)
 	(printout t "Opción 1: Tengo en mente una rama" crlf "Opcion 2: No se por cual rama decantarme" crlf)
 	(printout t "Elija una opcion: ")
-	(assert (opcion_inicial (read)))
+	(bind ?opcion (read))
+	
+
+
+	(while
+		(not(or (= ?opcion 1)(= ?opcion 2)))
+	
+	do
+		(printout t "No ha introducido una opcion correcta."crlf)
+		(printout t "Opción 1: Tengo en mente una rama" crlf "Opcion 2: No se por cual rama decantarme" crlf)
+		(bind ?opcion (read))
+	)
+	
+	(assert (opcion_inicial ?opcion))
+
 
 )
 
@@ -106,7 +120,24 @@
 	(printout t "Opcion 2: Computacion" crlf)
 	(printout t "Opcion 3: Ingenieria de computadores" crlf)
 	(printout t "Elija una opción: ")
-	(assert (opcion_inicial_rama (read))) 
+	(bind ?opcion (read))
+	
+
+
+	(while
+		(not(or (= ?opcion 1)(= ?opcion 2)(= ?opcion 3)))
+	
+	do
+		(printout t "No ha introducido una opcion correcta."crlf)
+		(printout t "Por favor " ?nombre ", elija una opcion correcta de las ramas disponibles en la UCO:" crlf)
+		(printout t "Opcion 1: Ingenieria del Software" crlf)
+		(printout t "Opcion 2: Computacion" crlf)
+		(printout t "Opcion 3: Ingenieria de computadores" crlf)
+		(printout t "Elija una opción: ")
+		(bind ?opcion (read))
+	)
+	
+	(assert (opcion_inicial_rama ?opcion))
 
 )
 
@@ -277,7 +308,21 @@
 =>
 	(printout t "Una ultima pregunta " ?nombre ". ¿Has cursado alguna asignatura más que no sea alguna de la que te he preguntado)" crlf)
 	(printout t "(Si/No)" crlf)
-	(assert (preguntas_extra (read)))
+	
+
+	(bind ?opcion_preguntas (read))
+	
+	(while
+	
+		(not(or
+			(eq ?opcion_preguntas Si)(eq ?opcion_preguntas SI)(eq ?opcion_preguntas si)(eq ?opcion_preguntas No)(eq ?opcion_preguntas NO)(eq ?opcion_preguntas no)
+			)
+		)
+	do
+
+	)
+
+	(assert (preguntas_extra ?opcion_preguntas))
 
 )
 
