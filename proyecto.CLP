@@ -54,6 +54,9 @@
 
 )
 
+
+
+
 (defrule MAIN::regla-bienvenido2
 
 	(datos (nombre ?nombre))
@@ -587,7 +590,7 @@
 
 =>
 	(retract ?d1)
-
+	(assert(calculado_software 1))
 	(bind ?media (/ ?x ?e))
 	(assert(media (rama "Software")(acumulador ?x)(elementos ?e)(media ?media)))
 )
@@ -604,7 +607,7 @@
 
 =>
 	(retract ?d1)
-
+	(assert(calculado_computacion 1))
 	(bind ?media (/ ?x ?e))
 	(assert(media (rama "Computacion")(acumulador ?x)(elementos ?e)(media ?media)))
 )
@@ -621,13 +624,16 @@
 
 =>
 	(retract ?d1)
-
+	(assert(calculado_computadores 1))
 	(bind ?media (/ ?x ?e))
 	(assert(media (rama "Computadores")(acumulador ?x)(elementos ?e)(media ?media)))
 )
 
 (defrule mostrar
-	(calcular 1)
+	(calculado_computadores 1)
+	(calculado_computacion 1)
+	(calculado_software 1)
+
 	?d1<-(media (rama ?x)(acumulador ?y)(elementos ?z)(media ?media))
 	(not
 		(exists
