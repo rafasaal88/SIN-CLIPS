@@ -319,7 +319,9 @@
 			)
 		)
 	do
-
+	(printout t "Error!! Una ultima pregunta " ?nombre ". ¿Has cursado alguna asignatura mas que no sea alguna de las que te he preguntado)" crlf)
+	(printout t "(Si/No)" crlf)
+	(bind ?opcion (read))
 	)
 
 	(assert (preguntas_extra ?opcion))
@@ -355,34 +357,167 @@
 		(printout t "De acuerdo " ?nombre ". Vamos a preguntarte las asignaturas, RESPONDE CON 0 LAS QUE NO HAYAS CURSADO" crlf)
 
 		(printout t "Programacion y Administracion de Sistemas: " crlf)		
-		(assert (asignatura(rama "software")(nombre "pas")(nota (read))))
+		
+		(bind ?pas (read))
+	
+		(while
+			(not(and(numberp ?pas)(>= ?pas 0)(<= ?pas 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?pas (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "pas")(nota ?pas)))
+
 
 		(printout t "Sistemas de informacion: " crlf)		
-		(assert (asignatura(rama "software")(nombre "sif")(nota (read))))
+		
+		(bind ?sif (read))
+	
+		(while
+			(not(and(numberp ?sif)(>= ?sif 0)(<= ?sif 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?sif (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "sif")(nota ?sif)))
+
+
 
 		(printout t "Estructura de datos: " crlf)		
-		(assert (asignatura(rama "computacion") (nombre "ed")(nota (read))))
+		
+		(bind ?ed (read))
+	
+		(while
+			(not(and(numberp ?ed)(>= ?ed 0)(<= ?ed 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?ed (read))
+		)
+
+		(assert (asignatura(rama "computacion") (nombre "ed")(nota ?ed)))
+
+
 
 		(printout t "Sistemas inteligentes: " crlf)		
-		(assert (asignatura(rama "computacion") (nombre "sin")(nota (read))))
+		
+		(bind ?sin (read))
+	
+		(while
+			(not(and(numberp ?sin)(>= ?sin 0)(<= ?sin 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?sin (read))
+		)
+
+		(assert (asignatura(rama "computacion") (nombre "sin")(nota ?sin)))
+
+
 
 		(printout t "Arquitectura de redes: " crlf)		
-		(assert (asignatura(rama "computadores") (nombre "ar")(nota (read))))
+		
+		(bind ?ar (read))
+	
+		(while
+			(not(and(numberp ?ar)(>= ?ar 0)(<= ?ar 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?ar (read))
+		)
+
+		(assert (asignatura(rama "computadores") (nombre "ar")(nota ?ar)))
+
+
+
 
 		(printout t "Redes: " crlf)		
-		(assert (asignatura(rama "computadores") (nombre "redes")(nota (read))))
+		
+		(bind ?redes (read))
+	
+		(while
+			(not(and(numberp ?redes)(>= ?redes 0)(<= ?redes 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?redes (read))
+		)
+
+		(assert (asignatura(rama "computadores") (nombre "redes")(nota ?redes)))
+
+
+
 
 		(printout t "Configuracion y Evaluacion de Sistemas Informaticos: " crlf)		
-		(assert (asignatura(rama "computadores") (nombre "cesi")(nota (read))))
+		
+		(bind ?cesi (read))
+	
+		(while
+			(not(and(numberp ?cesi)(>= ?cesi 0)(<= ?cesi 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?cesi (read))
+		)
+
+		(assert (asignatura(rama "computadores") (nombre "cesi")(nota ?cesi)))
+
+
+
 
 		(printout t "Programacion Web: " crlf)		
-		(assert (asignatura(rama "software") (nombre "pw")(nota (read))))
+		
+		(bind ?pw (read))
+	
+		(while
+			(not(and(numberp ?pw)(>= ?pw 0)(<= ?pw 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?pw (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "pw")(nota ?pw)))
+
+
+
 
 		(printout t "Legislacion: " crlf)		
-		(assert (asignatura(rama "software") (nombre "legislacion")(nota (read))))		
+		
+		(bind ?legislacion (read))
+	
+		(while
+			(not(and(numberp ?legislacion)(>= ?legislacion 0)(<= ?legislacion 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?legislacion (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "legislacion")(nota ?legislacion)))
+
+
+
 
 		(printout t "Proyectos: " crlf)		
-		(assert (asignatura(rama "software") (nombre "proyectos")(nota (read))))
+		
+		(bind ?proyectos (read))
+	
+		(while
+			(not(and(numberp ?proyectos)(>= ?proyectos 0)(<= ?proyectos 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?proyectos (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "legislacion")(nota ?proyectos)))
+
 
 	(printout t "De acuerdo " ?nombre ". Hemos acabado con las preguntas. Vamos a calcular los resultados y te vamos a ofrecer un resultado.
 	Tras realizar calculos de las medias de las asignaturas que nos has aportado el ranking	por ramas que deberias escoger es el siguiente:" crlf)
@@ -603,7 +738,7 @@
 
 
 
-		(printout t "Introduccion a la programacion: " crlf)		
+		(printout t "Calculo: " crlf)		
 		
 		(bind ?calculo (read))
 	
@@ -760,43 +895,196 @@
 	=>
 		(printout t "Vamos a empezar por las de primero" crlf)
 
-		(printout t "Introduccion a la programacion: " crlf)	
-		(assert (asignatura(rama "computacion") (nombre "ip")(nota (read))))
+		(printout t "Introduccion a la programacion: " crlf)		
+		
+		(bind ?ip (read))
+	
+		(while
+			(not(and(numberp ?ip)(>= ?ip 0)(<= ?ip 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?ip (read))
+		)
+
+		(assert (asignatura(rama "computacion") (nombre "ip")(nota ?ip)))
+
+
+
+
 
 		(printout t "Calculo: " crlf)		
-		(assert (asignatura(rama "computacion") (nombre "calculo")(nota (read))))
+		
+		(bind ?calculo (read))
+	
+		(while
+			(not(and(numberp ?calculo)(>= ?calculo 0)(<= ?calculo 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?calculo (read))
+		)
+
+		(assert (asignatura(rama "computacion") (nombre "calculo")(nota ?calculo)))
+
+
 
 		(printout t "Estadistica: " crlf)		
-		(assert (asignatura(rama "computacion") (nombre "estadistica")(nota (read))))
+		
+		(bind ?estadistica (read))
+	
+		(while
+			(not(and(numberp ?estadistica)(>= ?estadistica 0)(<= ?estadistica 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?estadistica (read))
+		)
+
+		(assert (asignatura(rama "computacion") (nombre "estadistica")(nota ?estadistica)))
+
 
 		(printout t "Fisica: " crlf)		
-		(assert (asignatura(rama "computadores") (nombre "fisica")(nota (read))))
+		
+		(bind ?fisica (read))
+	
+		(while
+			(not(and(numberp ?fisica)(>= ?fisica 0)(<= ?fisica 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?fisica (read))
+		)
+
+		(assert (asignatura(rama "computadores") (nombre "fisica")(nota ?fisica)))		
 
 		(printout t "Fundamentos y estructuras de computadores: " crlf)		
-		(assert (asignatura(rama "computadores") (nombre "fec")(nota (read))))
+		
+		(bind ?fec (read))
+	
+		(while
+			(not(and(numberp ?fec)(>= ?fec 0)(<= ?fec 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?fec (read))
+		)
+
+		(assert (asignatura(rama "computadores") (nombre "fec")(nota ?fec)))
 
 		(printout t "Circuitos y sistemas electronicos: " crlf)		
-		(assert (asignatura(rama "computadores") (nombre "cse")(nota (read))))
+		
+		(bind ?cse (read))
+	
+		(while
+			(not(and(numberp ?cse)(>= ?cse 0)(<= ?cse 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?cse (read))
+		)
+
+		(assert (asignatura(rama "computadores") (nombre "cse")(nota ?cse)))	
+
+
 
 		(printout t "Metodologia de la programacion: " crlf)		
-		(assert (asignatura(rama "computacion") (nombre "mp")(nota (read))))		
+		
+		(bind ?mp (read))
+	
+		(while
+			(not(and(numberp ?mp)(>= ?mp 0)(<= ?mp 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?mp (read))
+		)
+
+		(assert (asignatura(rama "computacion") (nombre "mp")(nota ?mp)))
+
+				
 
 		(printout t crlf "Vamos ahora con las de segundo:" crlf crlf)
 
+
 		(printout t "Base de datos: " crlf)		
-		(assert (asignatura(rama "software") (nombre "bdd")(nota (read))))
+		
+		(bind ?bdd (read))
+	
+		(while
+			(not(and(numberp ?bdd)(>= ?bdd 0)(<= ?bdd 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?bdd (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "bdd")(nota ?bdd)))
+
+
 
 		(printout t "Sistemas operativos: " crlf)		
-		(assert (asignatura(rama "software")(nombre "so")(nota (read))))
+		
+		(bind ?so (read))
+	
+		(while
+			(not(and(numberp ?so)(>= ?so 0)(<= ?so 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?so (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "so")(nota ?so)))
+
+
+
 
 		(printout t "Ingenieria del Software: " crlf)		
-		(assert (asignatura(rama "software")(nombre "is")(nota (read))))
+		
+		(bind ?is (read))
+	
+		(while
+			(not(and(numberp ?is)(>= ?is 0)(<= ?is 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?is (read))
+		)
+
+		(assert (asignatura(rama "software") (nombre "is")(nota ?is)))
+
+
 
 		(printout t "Programacion Orienta a Objetos: " crlf)		
-		(assert (asignatura(rama "computacion") (nombre "poo")(nota (read))))
+		
+		(bind ?poo (read))
+	
+		(while
+			(not(and(numberp ?poo)(>= ?poo 0)(<= ?poo 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?poo (read))
+		)
+
+		(assert (asignatura(rama "computacion") (nombre "poo")(nota ?poo)))
+
+	
 
 		(printout t "Arquitectura de computadores: " crlf)		
-		(assert (asignatura(rama "computadores") (nombre "ac")(nota (read))))
+		
+		(bind ?ac (read))
+	
+		(while
+			(not(and(numberp ?ac)(>= ?ac 0)(<= ?ac 10) ))
+		
+		do
+			(printout t "Error!!, debe introducir un numero entre 0 y 10" crlf)
+			(bind ?ac (read))
+		)
+
+		(assert (asignatura(rama "computadores") (nombre "ac")(nota ?ac)))	
 
 
 	)
