@@ -63,7 +63,7 @@
 
 	=>
 
-	(printout t "Bienvenido al Sistema de ayuda a la decision para: Elegir asignaturas o 
+	(printout t crlf crlf "Bienvenido al Sistema de ayuda a la decision para: Elegir asignaturas o 
 	itinerario en el Grado en Ingenieria Informatica. " crlf crlf)
 	
 	(printout t "Por favor, introduzca su nombre para dirigirme a usted" crlf)	
@@ -93,7 +93,7 @@
 	
 	do
 		(printout t "No ha introducido una opcion correcta."crlf)
-		(printout t "Opcion 1: Tengo en mente una rama" crlf "Opcion 2: No se por cual rama decantarme" crlf)
+		(printout t "Opcion 1: Tengo en mente una rama" crlf "Opcion 2: No se por cual rama decantarme" crlf crlf )
 		(bind ?opcion (read))
 	)
 	
@@ -115,7 +115,7 @@
 =>
 	(retract ?d1 ?d2 ?d3)	
 
-	(printout t "De acuerdo " ?nombre ", no te preocupes. Me programaron para ayudarte." crlf)
+	(printout t crlf crlf "De acuerdo " ?nombre ", no te preocupes. Me programaron para ayudarte." crlf)
  
 	(focus NINGUNA)
 	
