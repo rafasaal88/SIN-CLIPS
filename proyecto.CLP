@@ -1,5 +1,9 @@
+;Definicion modulo main
 (defmodule MAIN(export ?ALL)) 
 
+
+
+;Esta funcion comprueba que el parametro pasado por referencia este en un rango entre 0 y 10
 (deffunction MAIN::nota (?nota)
 
 	(while
@@ -15,12 +19,13 @@
 
 
 
+;Template para almacenar el nombre de usuario
 (deftemplate MAIN::datos
 	(slot nombre(type SYMBOL))
 )
 
 
-
+;Template para almacenar los hechos correspondientes a los datos de una asignatura
 (deftemplate MAIN::asignatura
 
 	(slot nombre(type STRING))
@@ -28,6 +33,9 @@
 	(slot rama(type STRING))
 )
 
+
+
+;Template para almacenar los hechos correspondientes al calculo de las notas de las asignaturas 
 (deftemplate MAIN::media
 	(slot rama (type STRING))
 	(slot acumulador (type FLOAT))
@@ -35,6 +43,9 @@
 	(slot media (type FLOAT))
 )
 
+
+
+;Hechos para almacenar el calculo de la media de las asignaturas
 (deffacts medias
 	(media (rama "Software")(acumulador 0.0)(elementos 0.0)(media 0.0))
 	(media (rama "Computacion")(acumulador 0.0)(elementos 0.0)(media 0.0))
@@ -42,21 +53,23 @@
 )
 
 
-
+;Hechos necesarios para disparar las reglas por bloques de preguntas por ramas
 (deffacts hechos
-
 	(activar_software 0)
 	(activar_computacion 0)
 	(activar_computadores 0)
 	(contador 1)
 )
 
+;-------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------
 
 
 
 
-
-
+;Regla inicial. Tiene máxima prioridad ya que su antecedente está vacio y es necesario que sea la primera regla que se dispare
 (defrule MAIN::regla-bienvenido
 
 	(declare (salience 100))
@@ -73,15 +86,14 @@
 )
 
 
-
-
+;Es la segunda regla que se dispara, ya que contiene el hecho anterior recogido
 (defrule MAIN::regla-bienvenido2
 
 	(datos (nombre ?nombre))
 
 =>
 
-	(printout t crlf "De acuerdo " ?nombre ". �Tienes en mente elegir alguna rama en concreto o no sabes cual elegir?" crlf)
+	(printout t crlf "De acuerdo " ?nombre ". ¿Tienes en mente elegir alguna rama en concreto o no sabes cual elegir?" crlf)
 	(printout t "Opcion 1: Tengo en mente una rama" crlf "Opcion 2: No se por cual rama decantarme" crlf)
 	(printout t "Elija una opcion: ")
 	(bind ?opcion (read))
@@ -102,7 +114,7 @@
 
 )
 
-
+;Esta regla se activa si has elegido en la anterior la opcion 2. Dispara el modulo que contiene todas las preguntas
 (defrule MAIN::tiene_en_mente_2
 
 	(datos (nombre ?nombre))
@@ -117,18 +129,18 @@
 
 	(printout t crlf crlf "De acuerdo " ?nombre ", no te preocupes. Me programaron para ayudarte." crlf)
  
-	(focus NINGUNA)
+	(focus NINGUNA) ;Llamada al modulo de todas las preguntas
 	
+	;Cambiamos los siguientes hechos para que se dispare la regla de preguntas extra
 	(assert(activar_software 1))
 	(assert(activar_computacion 1))
 	(assert(activar_computadores 1))
-
 	(assert (preguntas_extra 0))
 )
 
 
 
-
+;Si ha elegido que tiene una regla en mente se dispara esta regla que pregunta cual es
 (defrule MAIN::tiene_en_mente
 
 	(datos (nombre ?nombre))
@@ -144,7 +156,7 @@
 	(bind ?opcion (read))
 	
 
-
+	;Comprobamos que no ha elegido una opcion diferente de 1-3
 	(while
 		(not(or (= ?opcion 1)(= ?opcion 2)(= ?opcion 3)))
 	
@@ -162,6 +174,11 @@
 
 )
 
+;----------------------------------------------------------------------------
+;----Bloque de preguntas si ha elegido software------------------------------
+;----------------------------------------------------------------------------
+
+
 
 (defrule MAIN::tiene_en_mente_elegir_1
 	(opcion_inicial 1)
@@ -176,7 +193,7 @@
 	(retract ?d1)
 	(printout t "Bueno " ?nombre ", primero te vas a realizar preguntas de asignaturas relacionadas con dicha rama, comencemos." crlf)
 	(assert (activar_software 1))
-	(focus SOFTWARE)
+	(focus SOFTWARE) ;Llamada al modulo de preguntas de software
 	
 )
 
@@ -191,7 +208,7 @@
 	(retract ?d1)
 	(assert (activar_computacion 1))
 	(printout t "Ahora vamos con las preguntas de computacion" crlf)
-	(focus COMPUTACION)
+	(focus COMPUTACION);Llamada al modulo de preguntas de computacion
 )
 
 (defrule MAIN::tiene_en_mente_elegir_1_1_1
@@ -206,8 +223,16 @@
 	(retract ?d1)
 	(assert(activar_computadores 1))
 	(printout t "A continuacion, vamos con las de computadores. Ya queda poco " ?nombre crlf)
-	(focus COMPUTADORES)
+	(focus COMPUTADORES);Llamada al modulo de preguntas de computadores
 )
+
+
+
+
+;----------------------------------------------------------------------------
+;----Bloque de preguntas si ha elegido computacion---------------------------
+;----------------------------------------------------------------------------
+
 
 
 (defrule MAIN::tiene_en_mente_elegir_2
@@ -221,7 +246,7 @@
 	(retract ?d1)
 	(printout t "Bueno " ?nombre ", primero te vas a realizar preguntas de asignaturas relacionadas con dicha rama, comencemos." crlf)
 	(assert (activar_computacion 1))
-	(focus COMPUTACION)
+	(focus COMPUTACION);Llamada al modulo de preguntas de computacion
 	
 )
 
@@ -235,7 +260,7 @@
 	(retract ?d1)
 	(assert (activar_software 1))
 	(printout t "Ahora vamos con las preguntas de software" crlf)
-	(focus SOFTWARE)
+	(focus SOFTWARE);Llamada al modulo de preguntas de software
 )
 
 
@@ -251,9 +276,14 @@
 	(retract ?d1)
 	(assert(activar_computadores 1))
 	(printout t "A continuacion, vamos con las de computadores. Ya queda poco " ?nombre crlf)
-	(focus COMPUTADORES)
+	(focus COMPUTADORES);Llamada al modulo de preguntas de computadores
 )
 
+
+
+;----------------------------------------------------------------------------
+;----Bloque de preguntas si ha elegido computadores--------------------------
+;----------------------------------------------------------------------------
 
 (defrule MAIN::tiene_en_mente_elegir_3
 	(opcion_inicial 1)
@@ -268,7 +298,7 @@
 	(retract ?d1)
 	(printout t "Bueno " ?nombre ", primero te vas a realizar preguntas de asignaturas relacionadas con dicha rama, comencemos." crlf)
 	(assert (activar_computadores 1))
-	(focus COMPUTADORES)
+	(focus COMPUTADORES);Llamada al modulo de preguntas de computadores
 	
 )
 
@@ -283,7 +313,7 @@
 	(retract ?d1)
 	(assert (activar_software 1))
 	(printout t "Ahora vamos con las preguntas de software" crlf)
-	(focus SOFTWARE)
+	(focus SOFTWARE);Llamada al modulo de preguntas de software
 )
 
 (defrule MAIN::tiene_en_mente_elegir_3_1_1
@@ -298,9 +328,22 @@
 	(retract ?d1)
 	(assert(activar_computacion 1))
 	(printout t "A continuacion, vamos con las de computacion. Ya queda poco " ?nombre crlf)
-	(focus COMPUTACION)
+	(focus COMPUTACION);Llamada al modulo de preguntas de computacion
 )
 
+
+;-------------------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------------------
+;-------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+;Esta regla se activa al finalizar cualquiera de los tres bloque anteriores, son asignaturas que no pertenecen a ninguna rama
 (defrule asignaturas_sin_rama
 	(opcion_inicial 1)
 	(activar_software 1)
@@ -317,6 +360,11 @@
 
 )
 
+
+
+
+
+;Una vez han finaliado cualquiera de las opciones sea tener en mente o no se pregunta si ha cursado mas asignaturas
 (defrule extra
 	(preguntas_extra 0)
 	(datos (nombre ?nombre))
@@ -334,15 +382,18 @@
 			)
 		)
 	do
-	(printout t "Error!! Una ultima pregunta " ?nombre ". �Has cursado alguna asignatura mas que no sea alguna de las que te he preguntado)" crlf)
+	(printout t "Error!! Una ultima pregunta " ?nombre ". ¿Has cursado alguna asignatura mas que no sea alguna de las que te he preguntado)" crlf)
 	(printout t "(Si/No)" crlf)
 	(bind ?opcion (read))
 	)
 
-	(assert (preguntas_extra ?opcion))
+	(assert (preguntas_extra ?opcion));Se almacena en un hecho la respuesta
 
 )
 
+
+
+;Si ha contestado que no, se dispara esta regla que guardara un hecho que dispara las reglas de calculo de medias
 (defrule extra_2_1
 	(or(or(preguntas_extra No)(preguntas_extra NO))(preguntas_extra no))
 	(datos (nombre ?nombre))
@@ -354,7 +405,7 @@
 
 )
 
-
+;Si ha contestado que si cambiamos el hecho preguntas_extras a 1 para disparar la siguiente regla
 (defrule extra_2
 	(or(or(preguntas_extra Si)(preguntas_extra SI))(preguntas_extra si))
 	?d1<-(preguntas_extra 0)
@@ -365,17 +416,21 @@
 
 )
 
+
+;Esta regla dispara el modulo de preguntas extras
 (defrule extra_3
 	?d1<-(preguntas_extra 1)
 	(datos (nombre ?nombre))
 
 =>
 	(printout t "De acuerdo " ?nombre ". Vamos a preguntarte las asignaturas, RESPONDE CON 0 LAS QUE NO HAYAS CURSADO" crlf)
-	(assert(preguntas_extra 2))
-	(focus EXTRA)
+	(assert(preguntas_extra 2));Cambiamos a 2 para disparar la regla siguiente
+	(focus EXTRA);Llamada al modulo de preguntas extras
 
 )
 
+
+;Esta regla dispara otras reglas a traves de un hecho llamado calcular que hace lo que el propio nombre indicar
 (defrule extra_3_1
 	(preguntas_extra 2)
 	(datos (nombre ?nombre))
@@ -390,7 +445,7 @@
 
 
 
-
+;Antes de realizar el calculo se borran las asignaturas quue tienen 0 de nota ya que se consideran no cursadas
 (defrule borrar
 	(calcular 0)
 	?d1 <- (asignatura (nombre ?x)(nota ?z&:(= ?z 0))(rama ?y))
@@ -400,6 +455,8 @@
 
 )
 
+
+;Una vez que no existe ninguna asignatura con un 0 se procede al calculo de la media
 (defrule borrar_2
 	?d1<-(calcular 0)
 	(not(exists(asignatura (nombre ?x)(nota ?z&:(= ?z 0))(rama ?y))))
@@ -410,7 +467,7 @@
 )
 
 
-
+;Esta regla suma toda las notas de las asignaturas de software y borra el hecho que contiene la asignatura
 (defrule sumar_software
 	(calcular 1)
 	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "software"))
@@ -421,6 +478,8 @@
 
 )
 
+
+;Esta regla suma toda las notas de las asignaturas de computacion y borra el hecho que contiene la asignatura
 (defrule sumar_computacion
 	(calcular 1)
 	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "computacion"))
@@ -431,6 +490,7 @@
 
 )
 
+;Esta regla suma toda las notas de las asignaturas de computadores y borra el hecho que contiene la asignatura
 (defrule sumar_computadores
 	(calcular 1)
 	?d1<-(asignatura (nombre ?x)(nota ?y)(rama "computadores"))
@@ -441,6 +501,9 @@
 
 )
 
+
+;Comprueba que ya se ha sumado todos los elementos ya que no existe ninguna asignatura de la rama de software
+;Una vez realizada la comprobacion calcula la media
 (defrule media_software
 	(calcular 1)
 	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "software"))))
@@ -458,6 +521,8 @@
 	(assert(media (rama "Software")(acumulador ?x)(elementos ?e)(media ?media)))
 )
 
+;Comprueba que ya se ha sumado todos los elementos ya que no existe ninguna asignatura de la rama de computacion
+;Una vez realizada la comprobacion calcula la media
 (defrule media_computacion
 	(calcular 1)
 	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "computacion"))))
@@ -475,6 +540,9 @@
 	(assert(media (rama "Computacion")(acumulador ?x)(elementos ?e)(media ?media)))
 )
 
+
+;Comprueba que ya se ha sumado todos los elementos ya que no existe ninguna asignatura de la rama de computadores
+;Una vez realizada la comprobacion calcula la media
 (defrule media_computadores
 	(calcular 1)
 	(not(exists(asignatura (nombre ?m)(nota ?n)(rama "computadores"))))
@@ -494,7 +562,7 @@
 
 
 
-
+;Esta ultima regla muestra por pantalla las ramas segun su media de mayor a menor, dando al usuario informacion de cual es mejor para el
 (defrule mostrar
 	
 	(calculado_computadores 1)
@@ -524,7 +592,9 @@
 
 
 
-
+;--------------------------------------------------------------------------------------------------------
+;--------------------------PREGUNTAS DE SOFTWARE - MODULO SOFTWARE---------------------------------------
+;--------------------------------------------------------------------------------------------------------
 
 
 (defmodule SOFTWARE (import MAIN deftemplate asignatura initial-fact)(import MAIN deffunction nota))
@@ -569,7 +639,9 @@
 
 
 
-
+;--------------------------------------------------------------------------------------------------------
+;-----------------------PREGUNTAS DE COMPUTACION - MODULO COMPUTACION------------------------------------
+;--------------------------------------------------------------------------------------------------------
 
 
 (defmodule COMPUTACION(import MAIN deftemplate asignatura initial-fact)(import MAIN deffunction nota))
@@ -634,6 +706,12 @@
 
 
 
+
+;--------------------------------------------------------------------------------------------------------
+;----------------------PREGUNTAS DE COMPUTADORES - MODULO COMPUTADORES-----------------------------------
+;--------------------------------------------------------------------------------------------------------
+
+
 (defmodule COMPUTADORES(import MAIN deftemplate asignatura initial-fact)(import MAIN deffunction nota))
 
 
@@ -691,6 +769,11 @@
 	)
 
 
+
+
+;--------------------------------------------------------------------------------------------------------
+;--------------------------TODAS LAS PREGUNTAS - MODULO NINGUNA RAMA-------------------------------------
+;--------------------------------------------------------------------------------------------------------
 
 (defmodule NINGUNA(import MAIN deftemplate asignatura initial-fact)(import MAIN deffunction nota))
 
@@ -864,6 +947,9 @@
 
 
 
+;--------------------------------------------------------------------------------------------------------
+;--------------------------PREGUNTAS EXTRA - MODULO PREGUNTAS EXTRA--------------------------------------
+;--------------------------------------------------------------------------------------------------------
 
 
 (defmodule EXTRA(import MAIN deftemplate asignatura initial-fact)(import MAIN deffunction nota))
@@ -987,6 +1073,10 @@
 	)
 
 
+
+;--------------------------------------------------------------------------------------------------------
+;--------------------------PREGUNTAS SIN RAMA - MODULO PREGUNTAS SIN RAMA--------------------------------
+;--------------------------------------------------------------------------------------------------------
 
 
 (defmodule SINRAMA(import MAIN deftemplate asignatura initial-fact)(import MAIN deffunction nota))
