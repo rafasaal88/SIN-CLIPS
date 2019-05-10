@@ -106,6 +106,7 @@
 	do
 		(printout t "No ha introducido una opcion correcta."crlf)
 		(printout t "Opcion 1: Tengo en mente una rama" crlf "Opcion 2: No se por cual rama decantarme" crlf crlf )
+		(printout t "Por favor, elija una opcion: " crlf)
 		(bind ?opcion (read))
 	)
 	
@@ -376,7 +377,7 @@
 	(bind ?opcion (read))
 	
 	(while
-		(not(lexemep ?opcion))
+		
 		(not(or
 			(eq ?opcion Si)(eq ?opcion SI)(eq ?opcion si)(eq ?opcion No)(eq ?opcion NO)(eq ?opcion no)
 			)
@@ -575,7 +576,7 @@
 	?d2<-(media (rama ?x)(acumulador ?y)(elementos ?z)(media ?media))
 	(not
 		(exists
-			(media (media ?m&:(> ?media ?m)))
+			(media (media ?m&:(> ?m ?media)))
 		)
 	)
 
